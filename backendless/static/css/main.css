@@ -1,0 +1,27 @@
+/* main.css */
+
+/* Add custom styles here */
+
+body {
+  font-family: "Nunito", sans-serif;
+  font-size: 1rem;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+hr {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive breakpoint for smaller screens */
+@media (max-width: 992px) {
+  .container {
+    max-width: 100%;
+  }
+}
