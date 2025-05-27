@@ -1,8 +1,18 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Dashboard</h1>
-<a href="{% url 'endpoint_create' %}" class="btn btn-outline-primary"
-  >Create New Endpoint</a
->
+<div class="row mb-4">
+  <div class="col-md-6">
+    <a href="{% url 'endpoint_create' %}" class="btn btn-outline-primary">
+      Create New Endpoint
+    </a>
+  </div>
+  <div class="col-md-6 text-md-end">
+    <a href="{% url 'drink-round-list' %}" class="btn btn-outline-success">
+      <i class="fas fa-glass-cheers"></i> My Rounds of Drinks
+    </a>
+  </div>
+</div>
+
 <h2 class="mt-4">Your Endpoints</h2>
 <div class="row">
   {% for endpoint in endpoints %}
@@ -16,6 +26,12 @@
           class="btn btn-primary"
           >View Details</a
         >
+        <a 
+          href="{% url 'drink-round-create' endpoint.id %}" 
+          class="btn btn-outline-success btn-sm"
+        >
+          <i class="fas fa-glass-cheers"></i> Share
+        </a>
       </div>
     </div>
   </div>

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+<div class="container">
+  <h1>Share a Round of Drinks</h1>
+  <p class="lead">Share your endpoint "{{ endpoint.name }}" with others for a limited time or number of uses.</p>
+  <hr />
+
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+              <label for="id_name">Name your round</label>
+              <input type="text" name="name" class="form-control" id="id_name" required placeholder="e.g., Friday Drinks, Team Access, etc.">
+            </div>
+            
+            <div class="form-group">
+              <label for="id_description">Description (optional)</label>
+              <textarea name="description" class="form-control" id="id_description" rows="3" placeholder="Describe what this round is for or any special instructions"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="id_expires_in_hours">Expires in (hours)</label>
+              <input type="number" name="expires_in_hours" class="form-control" id="id_expires_in_hours" value="24" min="1" max="720">
+              <small class="form-text text-muted">How long this round will be available (1-720 hours)</small>
+            </div>
+            
+            <div class="form-group">
+              <label for="id_usage_limit">Usage limit</label>
+              <input type="number" name="usage_limit" class="form-control" id="id_usage_limit" value="10" min="1" max="1000">
+              <small class="form-text text-muted">Maximum number of times this endpoint can be used</small>
+            </div>
+            
+            <div class="form-group text-center mt-4">
+              <button type="submit" class="btn btn-primary">Share Round</button>
+              <a href="{% url 'endpoint_detail' endpoint.id %}" class="btn btn-outline-secondary ml-2">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

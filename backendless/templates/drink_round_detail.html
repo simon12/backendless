@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1>Round of Drinks Details</h1>
+  <p class="lead">View and manage your shared endpoint.</p>
+  <hr />
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <a href="{% url 'drink_rounds' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to My Rounds
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">{{ drink_round.name }}</h5>
+          {% if drink_round.is_available %}
+          <span class="badge bg-success">Active</span>
+          {% elif not drink_round.is_active %}
+          <span class="badge bg-secondary">Revoked</span>
+          {% elif drink_round.is_expired %}
+          <span class="badge bg-warning text-dark">Expired</span>
+          {% elif drink_round.is_usage_limit_reached %}
+          <span class="badge bg-info text-dark">Limit Reached</span>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <h6 class="card-subtitle mb-3 text-muted">Endpoint: {{ drink_round.endpoint.name }}</h6>
+          
+          {% if drink_round.description %}
+          <div class="mb-4">
+            <h6>Description:</h6>
+            <p>{{ drink_round.description }}</p>
+          </div>
+          {% endif %}
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6>Usage Statistics:</h6>
+              <div class="progress mb-2">
+                <div class="progress-bar bg-primary" role="progressbar" 
+                     style="width: {{ drink_round.usage_count|divisibleby:drink_round.usage_limit|yesno:'100,0' }}%;" 
+                     aria-valuenow="{{ drink_round.usage_count }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="{{ drink_round.usage_limit }}">
+                  {{ drink_round.usage_count }} / {{ drink_round.usage_limit }}
+                </div>
+              </div>
+              <small class="text-muted">
+                {{ drink_round.usage_limit|add:"-"|add:drink_round.usage_count }} uses remaining
+              </small>
+            </div>
+            <div class="col-md-6">
+              <h6>Time Remaining:</h6>
+              <p>Expires on: {{ drink_round.expires_at|date:"M d, Y H:i" }}</p>
+            </div>
+          </div>
+          
+          <h6>Share Link:</h6>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" value="{{ request.scheme }}://{{ request.get_host }}/shared/{{ drink_round.access_token }}/" id="share-url" readonly>
+            <button class="btn btn-outline-secondary" type="button" onclick="copyShareUrl()">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          
+          <div class="mt-4">
+            <h6>Access Token:</h6>
+            <code>{{ drink_round.access_token }}</code>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="d-flex justify-content-between">
+            {% if drink_round.is_available %}
+            <form action="{% url 'drink_round_revoke' drink_round.id %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">
+                <i class="fas fa-ban"></i> Revoke Access
+              </button>
+            </form>
+            <a href="{{ request.scheme }}://{{ request.get_host }}/shared/{{ drink_round.access_token }}/" 
+               class="btn btn-primary" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Test Link
+            </a>
+            {% else %}
+            <button class="btn btn-secondary" disabled>
+              <i class="fas fa-ban"></i> Already Revoked
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Usage History</h5>
+        </div>
+        <div class="card-body">
+          {% if drink_round.usage_count > 0 %}
+          <ul class="list-group">
+            {% for i in "x"|rjust:drink_round.usage_count %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Use #{{ forloop.counter }}
+              <span class="badge bg-primary rounded-pill">{{ forloop.counter|timeuntil:drink_round.created_at }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-center text-muted">No usage recorded yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyShareUrl() {
+    var copyText = document.getElementById("share-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    
+    // Show a tooltip or some indication that the URL was copied
+    alert("Share URL copied to clipboard!");
+  }
+</script>
+{% endblock %}
+
