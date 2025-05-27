@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <h1>🍹 Round of Drinks 🍹</h1>
+      <p class="lead">{{ drink_round.name }}</p>
+      <p>Shared by: <strong>{{ drink_round.creator.username }}</strong></p>
+      {% if drink_round.description %}
+      <p>{{ drink_round.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">{{ endpoint.name }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info">
+            <p class="mb-0">
+              <i class="fas fa-info-circle"></i> 
+              This endpoint has been shared with you. You can use it 
+              <strong>{{ drink_round.usage_limit - drink_round.usage_count }}</strong> more times 
+              before {{ drink_round.expires_at|date:"M d, Y H:i" }}.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="input_data">Enter your input:</label>
+            <textarea class="form-control" id="input_data" rows="5" placeholder="Enter your input data here..."></textarea>
+          </div>
+
+          <div class="text-center">
+            <button id="submit_btn" class="btn btn-primary" onclick="callEndpoint()">
+              Submit
+            </button>
+          </div>
+
+          <div id="result_container" class="mt-4" style="display: none;">
+            <h5>Result:</h5>
+            <div class="card">
+              <div class="card-body">
+                <pre id="result_output" class="mb-0"></pre>
+              </div>
+            </div>
+            <div class="text-muted mt-2 text-center">
+              <small id="remaining_uses"></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function callEndpoint() {
+    const inputData = document.getElementById('input_data').value;
+    const submitBtn = document.getElementById('submit_btn');
+    const resultContainer = document.getElementById('result_container');
+    const resultOutput = document.getElementById('result_output');
+    const remainingUses = document.getElementById('remaining_uses');
+    
+    // Disable button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+    
+    // Make API call
+    fetch(window.location.href, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ input: inputData })
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Display result
+      resultOutput.textContent = data.response;
+      remainingUses.textContent = `You have ${data.remaining_uses} uses remaining`;
+      resultContainer.style.display = 'block';
+      
+      // Reset button
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit';
+    })
+    .catch(error => {
+      // Handle error
+      resultOutput.textContent = `Error: ${error.message}`;
+      resultContainer.style.display = 'block';
+      
+      // Reset button
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit';
+    });
+  }
+</script>
+{% endblock %}
+
