@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h1>Draw a Circle</h1>
+  <hr />
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          Circle Canvas
+        </div>
+        <div class="card-body">
+          <canvas id="circleCanvas" width="600" height="400" style="border:1px solid #d3d3d3; width: 100%; height: auto;"></canvas>
+          <div class="mt-3">
+            <div class="form-group">
+              <label for="radiusSlider">Circle Radius: <span id="radiusValue">50</span>px</label>
+              <input type="range" class="form-control-range" id="radiusSlider" min="10" max="150" value="50">
+            </div>
+            <div class="form-group">
+              <label for="colorPicker">Circle Color:</label>
+              <input type="color" class="form-control" id="colorPicker" value="#ff0000" style="width: 100px;">
+            </div>
+            <button id="drawCircleBtn" class="btn btn-primary">Draw Circle</button>
+            <button id="clearCanvasBtn" class="btn btn-secondary">Clear Canvas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
