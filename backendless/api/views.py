@@ -3,6 +3,7 @@ from rest_framework import generics
 from .models import Endpoint, TestArea, ApiKey
 from .serializers import EndpointSerializer, TestAreaSerializer, ApiKeySerializer
 from .permissions import IsEndpointOwner, IsApiKeyOwner
+from django.views.generic import TemplateView
 
 class EndpointListCreateView(generics.ListCreateAPIView):
     queryset = Endpoint.objects.all()
@@ -23,7 +24,7 @@ class TestAreaListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsEndpointOwner]
 
     def perform_create(self, serializer):
-        serializer.save(endpoint=Endpoint.objects.get(pk=self.kwargs['pk']))
+        serializer.save(endpoint=Endpoint.objects.get(pk=self.kwargs["pk"]))
 
 class TestAreaRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TestArea.objects.all()
@@ -42,3 +43,7 @@ class ApiKeyRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ApiKey.objects.all()
     serializer_class = ApiKeySerializer
     permission_classes = [IsApiKeyOwner]
+
+class CircleView(TemplateView):
+    template_name = "circle.html"
+

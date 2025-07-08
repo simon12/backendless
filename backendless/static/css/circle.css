@@ -1,0 +1,39 @@
+/* Circle drawing page styles */
+
+#circleCanvas {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+#radiusSlider {
+  width: 100%;
+}
+
+#colorPicker {
+  height: 40px;
+  padding: 0;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.card {
+  margin-bottom: 2rem;
+}
+
+.btn {
+  margin-right: 0.5rem;
+}
+
+/* Canvas container responsive styles */
+@media (max-width: 768px) {
+  #circleCanvas {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
